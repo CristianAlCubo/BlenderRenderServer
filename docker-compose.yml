@@ -1,0 +1,73 @@
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    environment:
+      NODE_ENV: production
+      BACKEND_PORT: "${BACKEND_PORT:-3000}"
+      DATABASE_URL: "${DATABASE_URL:-/data/database/app.db}"
+      REDIS_URL: "${REDIS_URL:-redis://redis:6379}"
+      DATA_DIR: "${DATA_DIR:-/data}"
+      MAX_UPLOAD_SIZE: "${MAX_UPLOAD_SIZE:-10GB}"
+      MAX_CONCURRENT_RENDERS: "${MAX_CONCURRENT_RENDERS:-1}"
+      DEFAULT_RENDER_MODE: "${DEFAULT_RENDER_MODE:-CPU}"
+      JOB_RETRY_ATTEMPTS: "${JOB_RETRY_ATTEMPTS:-3}"
+      WS_PATH: "/api/ws"
+    volumes:
+      - render_data:/data
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: docker/worker.Dockerfile
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "${DATABASE_URL:-/data/database/app.db}"
+      REDIS_URL: "${REDIS_URL:-redis://redis:6379}"
+      DATA_DIR: "${DATA_DIR:-/data}"
+      BLENDER_PATH: "${BLENDER_PATH:-/opt/blender/blender}"
+      FFMPEG_PATH: "${FFMPEG_PATH:-/usr/bin/ffmpeg}"
+      MAX_CONCURRENT_RENDERS: "${MAX_CONCURRENT_RENDERS:-1}"
+      DEFAULT_RENDER_MODE: "${DEFAULT_RENDER_MODE:-CPU}"
+      JOB_RETRY_ATTEMPTS: "${JOB_RETRY_ATTEMPTS:-3}"
+      WORKER_NAME: "${WORKER_NAME:-render-server-01}"
+    volumes:
+      - render_data:/data
+    depends_on:
+      - redis
+      - backend
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+volumes:
+  render_data:

@@ -1,0 +1,24 @@
+{
+  "name": "blender-render-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted Blender render server",
+  "workspaces": [
+    "packages/*",
+    "backend",
+    "worker",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build -w @render-server/shared && npm run build -w @render-server/backend && npm run build -w @render-server/worker && npm run build -w @render-server/frontend",
+    "dev:backend": "npm run dev -w @render-server/backend",
+    "dev:worker": "npm run dev -w @render-server/worker",
+    "dev:frontend": "npm run dev -w @render-server/frontend",
+    "lint": "npm run lint -w @render-server/backend && npm run lint -w @render-server/worker && npm run lint -w @render-server/frontend",
+    "typecheck": "npm run typecheck -w @render-server/shared && npm run typecheck -w @render-server/backend && npm run typecheck -w @render-server/worker && npm run typecheck -w @render-server/frontend",
+    "test": "npm run test -w @render-server/backend"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -8,11 +8,11 @@ services:
     depends_on:
       backend:
         condition: service_healthy
-      frontend:
+      blender-frontend:
         condition: service_healthy
     restart: unless-stopped
 
-  frontend:
+  blender-frontend:
     build:
       context: .
       dockerfile: docker/frontend.Dockerfile

@@ -3,7 +3,7 @@ import { z } from "zod";
 const envSchema = z.object({
   NODE_ENV: z.string().default("production"),
   DATABASE_URL: z.string().default("/data/database/app.db"),
-  REDIS_URL: z.string().default("redis://redis:6379"),
+  REDIS_URL: z.string().default("redis://blender-redis:6379"),
   DATA_DIR: z.string().default("/data"),
   BLENDER_PATH: z.string().default("/opt/blender/blender"),
   FFMPEG_PATH: z.string().default("/usr/bin/ffmpeg"),

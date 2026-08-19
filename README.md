@@ -111,7 +111,7 @@ Copy `.env.example` to `.env` and adjust. Key variables:
 | --- | --- | --- |
 | `BACKEND_PORT` | `3000` | Fastify port (internal only) |
 | `DATABASE_URL` | `/data/database/app.db` | SQLite path |
-| `REDIS_URL` | `redis://redis:6379` | BullMQ Redis connection |
+| `REDIS_URL` | `redis://blender-redis:6379` | BullMQ Redis connection |
 | `DATA_DIR` | `/data` | Persistent data root |
 | `BLENDER_PATH` | `/opt/blender/blender` | Blender executable |
 | `FFMPEG_PATH` | `/usr/bin/ffmpeg` | FFmpeg executable |
@@ -126,7 +126,7 @@ Run Redis only in Docker, then run backend, worker, and frontend natively:
 
 ```bash
 # 1. Start Redis
-docker compose up -d redis
+docker compose up -d blender-redis
 
 # 2. Backend (Fastify on :3000)
 npm install

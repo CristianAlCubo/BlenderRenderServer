@@ -1,12 +1,12 @@
 services:
-  nginx:
+  blender-nginx:
     image: nginx:alpine
     ports:
       - "80"
     volumes:
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
-      backend:
+      blender-backend:
         condition: service_healthy
       blender-frontend:
         condition: service_healthy
@@ -24,7 +24,7 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  backend:
+  blender-backend:
     build:
       context: .
       dockerfile: docker/backend.Dockerfile
@@ -32,7 +32,7 @@ services:
       NODE_ENV: production
       BACKEND_PORT: "${BACKEND_PORT:-3000}"
       DATABASE_URL: "${DATABASE_URL:-/data/database/app.db}"
-      REDIS_URL: "${REDIS_URL:-redis://redis:6379}"
+      REDIS_URL: "${REDIS_URL:-redis://blender-redis:6379}"
       DATA_DIR: "${DATA_DIR:-/data}"
       MAX_UPLOAD_SIZE: "${MAX_UPLOAD_SIZE:-10GB}"
       MAX_CONCURRENT_RENDERS: "${MAX_CONCURRENT_RENDERS:-1}"
@@ -42,7 +42,7 @@ services:
     volumes:
       - render_data:/data
     depends_on:
-      - redis
+      - blender-redis
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 10s
@@ -51,14 +51,14 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  worker:
+  blender-worker:
     build:
       context: .
       dockerfile: docker/worker.Dockerfile
     environment:
       NODE_ENV: production
       DATABASE_URL: "${DATABASE_URL:-/data/database/app.db}"
-      REDIS_URL: "${REDIS_URL:-redis://redis:6379}"
+      REDIS_URL: "${REDIS_URL:-redis://blender-redis:6379}"
       DATA_DIR: "${DATA_DIR:-/data}"
       BLENDER_PATH: "${BLENDER_PATH:-/opt/blender/blender}"
       FFMPEG_PATH: "${FFMPEG_PATH:-/usr/bin/ffmpeg}"
@@ -69,11 +69,11 @@ services:
     volumes:
       - render_data:/data
     depends_on:
-      - redis
-      - backend
+      - blender-redis
+      - blender-backend
     restart: unless-stopped
 
-  redis:
+  blender-redis:
     image: redis:7-alpine
     restart: unless-stopped
 

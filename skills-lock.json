@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "keep-a-changelog-generator": {
+      "source": "stanfordspezi/spezivibe",
+      "sourceType": "github",
+      "skillPath": "skills/keep-a-changelog-generator/SKILL.md",
+      "computedHash": "42417cd157cf0951d6f0c908a2bbf5364ea428f3f9f55d2e60320dd335d2534f"
+    }
+  }
+}

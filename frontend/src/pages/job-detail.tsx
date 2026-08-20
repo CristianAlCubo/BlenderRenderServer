@@ -137,11 +137,13 @@ export function JobDetailPage() {
   const job = jobQuery.data;
   const output = job.outputs[0];
   const started = job.startedAt ? new Date(job.startedAt).getTime() : null;
+  const completed = job.completedAt ? new Date(job.completedAt).getTime() : null;
   const elapsed = started ? Date.now() - started : 0;
   const eta =
     started && job.progress > 0 && isActive
       ? (elapsed / job.progress) * (100 - job.progress)
       : null;
+  const renderTime = started && completed ? completed - started : null;
 
   const canDownload = job.status === "COMPLETED" && output;
   const canPreview = canDownload;
@@ -224,8 +226,17 @@ export function JobDetailPage() {
             <div className="grid grid-cols-2 gap-3 text-sm">
               <Meta label="Compute" value={job.computeMode ?? job.renderMode} />
               <Meta label="Frames" value={job.totalFrames ? String(job.totalFrames) : "—"} />
-              <Meta label="Elapsed" value={started ? formatDuration(elapsed) : "—"} />
-              <Meta label="ETA" value={eta ? formatDuration(eta) : "—"} />
+              {isActive ? (
+                <>
+                  <Meta label="Elapsed" value={started ? formatDuration(elapsed) : "—"} />
+                  <Meta label="ETA" value={eta ? formatDuration(eta) : "—"} />
+                </>
+              ) : (
+                <Meta
+                  label="Render time"
+                  value={renderTime ? formatDuration(renderTime) : "—"}
+                />
+              )}
               <Meta label="Created" value={formatDate(job.createdAt)} />
               <Meta label="Completed" value={formatDate(job.completedAt)} />
             </div>

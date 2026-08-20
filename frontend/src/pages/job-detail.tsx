@@ -44,7 +44,7 @@ function Terminal({ lines }: { lines: Array<{ level: string; message: string; cr
   return (
     <div
       ref={ref}
-      className="h-64 overflow-y-auto rounded-md bg-black/60 p-3 font-mono text-xs leading-relaxed"
+      className="h-64 overflow-y-auto rounded-md border border-border bg-surface-sunken p-3 font-mono text-xs leading-relaxed"
     >
       {lines.length === 0 ? (
         <p className="text-muted-foreground">No logs yet.</p>
@@ -53,13 +53,13 @@ function Terminal({ lines }: { lines: Array<{ level: string; message: string; cr
           const time = new Date(line.createdAt).toLocaleTimeString();
           const color =
             line.level === "ERROR"
-              ? "text-red-400"
+              ? "text-destructive"
               : line.level === "WARN"
-                ? "text-amber-400"
-                : "text-zinc-300";
+                ? "text-warning"
+                : "text-foreground/80";
           return (
             <div key={i} className={color}>
-              <span className="text-zinc-500">[{time}]</span> {line.message}
+              <span className="text-muted-foreground">[{time}]</span> {line.message}
             </div>
           );
         })

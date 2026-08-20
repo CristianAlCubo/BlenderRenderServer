@@ -20,7 +20,7 @@ const NAV_ITEMS = [
 
 export function Sidebar() {
   return (
-    <aside className="hidden w-56 shrink-0 border-r bg-card md:flex md:flex-col">
+    <aside className="hidden w-56 shrink-0 border-r bg-surface-sunken md:flex md:flex-col">
       <div className="flex h-16 items-center gap-2 border-b px-5">
         <Activity className="h-5 w-5 text-primary" />
         <span className="text-sm font-semibold">Render Server</span>
@@ -33,8 +33,8 @@ export function Sidebar() {
             end={item.end}
             className={({ isActive }) =>
               cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                isActive && "bg-accent text-accent-foreground",
+                "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-surface-hover hover:text-foreground",
+                isActive && "bg-primary/15 text-primary hover:bg-primary/15 hover:text-primary",
               )
             }
           >

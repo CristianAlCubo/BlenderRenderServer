@@ -78,7 +78,7 @@ export function DashboardPage() {
           label="Rendering"
           value={count("RENDERING") + count("ENCODING")}
           icon={<Loader2 className="h-4 w-4 animate-spin" />}
-          tone="bg-blue-500/15 text-blue-500"
+          tone="bg-info/15 text-info"
         />
         <StatCard
           label="Queued"
@@ -90,7 +90,7 @@ export function DashboardPage() {
           label="Completed"
           value={count("COMPLETED")}
           icon={<CheckCircle2 className="h-4 w-4" />}
-          tone="bg-emerald-500/15 text-emerald-500"
+          tone="bg-success/15 text-success"
         />
         <StatCard
           label="Failed"

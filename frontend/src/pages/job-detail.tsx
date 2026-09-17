@@ -44,7 +44,7 @@ function Terminal({ lines }: { lines: Array<{ level: string; message: string; cr
   return (
     <div
       ref={ref}
-      className="h-64 overflow-y-auto rounded-md bg-black/60 p-3 font-mono text-xs leading-relaxed"
+      className="h-64 overflow-y-auto rounded-md border border-border bg-surface-sunken p-3 font-mono text-xs leading-relaxed"
     >
       {lines.length === 0 ? (
         <p className="text-muted-foreground">No logs yet.</p>
@@ -53,13 +53,13 @@ function Terminal({ lines }: { lines: Array<{ level: string; message: string; cr
           const time = new Date(line.createdAt).toLocaleTimeString();
           const color =
             line.level === "ERROR"
-              ? "text-red-400"
+              ? "text-destructive"
               : line.level === "WARN"
-                ? "text-amber-400"
-                : "text-zinc-300";
+                ? "text-warning"
+                : "text-foreground/80";
           return (
             <div key={i} className={color}>
-              <span className="text-zinc-500">[{time}]</span> {line.message}
+              <span className="text-muted-foreground">[{time}]</span> {line.message}
             </div>
           );
         })
@@ -137,11 +137,13 @@ export function JobDetailPage() {
   const job = jobQuery.data;
   const output = job.outputs[0];
   const started = job.startedAt ? new Date(job.startedAt).getTime() : null;
+  const completed = job.completedAt ? new Date(job.completedAt).getTime() : null;
   const elapsed = started ? Date.now() - started : 0;
   const eta =
     started && job.progress > 0 && isActive
       ? (elapsed / job.progress) * (100 - job.progress)
       : null;
+  const renderTime = started && completed ? completed - started : null;
 
   const canDownload = job.status === "COMPLETED" && output;
   const canPreview = canDownload;
@@ -224,8 +226,17 @@ export function JobDetailPage() {
             <div className="grid grid-cols-2 gap-3 text-sm">
               <Meta label="Compute" value={job.computeMode ?? job.renderMode} />
               <Meta label="Frames" value={job.totalFrames ? String(job.totalFrames) : "—"} />
-              <Meta label="Elapsed" value={started ? formatDuration(elapsed) : "—"} />
-              <Meta label="ETA" value={eta ? formatDuration(eta) : "—"} />
+              {isActive ? (
+                <>
+                  <Meta label="Elapsed" value={started ? formatDuration(elapsed) : "—"} />
+                  <Meta label="ETA" value={eta ? formatDuration(eta) : "—"} />
+                </>
+              ) : (
+                <Meta
+                  label="Render time"
+                  value={renderTime ? formatDuration(renderTime) : "—"}
+                />
+              )}
               <Meta label="Created" value={formatDate(job.createdAt)} />
               <Meta label="Completed" value={formatDate(job.completedAt)} />
             </div>

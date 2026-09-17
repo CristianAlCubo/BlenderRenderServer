@@ -17,7 +17,7 @@ function Layout() {
     <div className="flex min-h-screen">
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-16 items-center justify-between border-b px-6">
+        <header className="flex h-16 items-center justify-between border-b bg-surface-sunken px-6">
           <div className="text-sm font-medium">Blender Render Server</div>
           <div className="flex items-center gap-3">
             <ConnectionStatus />

@@ -11,7 +11,7 @@ export function ConnectionStatus() {
     <div
       className={cn(
         "flex items-center gap-1.5 text-xs font-medium",
-        connected ? "text-emerald-500" : "text-amber-500",
+        connected ? "text-success" : "text-warning",
       )}
     >
       {connected ? <Wifi className="h-3.5 w-3.5" /> : <WifiOff className="h-3.5 w-3.5" />}
